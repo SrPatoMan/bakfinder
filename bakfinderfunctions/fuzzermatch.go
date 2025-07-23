@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
 )
 
-func fuzzing(subdomain string, payloads []string) {
+func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.WaitGroup) {
 
 	controlUrl := fmt.Sprintf("%s/", subdomain)
 	controlRequest, _ := http.Get(controlUrl)
@@ -27,5 +28,8 @@ func fuzzing(subdomain string, payloads []string) {
 		}
 
 	}
+
+	defer func() { <-ch }()
+	defer wg.Done()
 
 }

@@ -38,13 +38,6 @@ func Permutations(subdomain string) []string {
 		}
 	}
 
-	for _, domain := range domain {
-		for _, ext := range extensions {
-			permutation := fmt.Sprintf("%s.%s", domain, ext)
-			permutations = append(permutations, permutation)
-		}
-	}
-
 	for _, domain := range domain_without_tld {
 		for _, ext := range extensions {
 			permutation := fmt.Sprintf("%s.%s", domain, ext)

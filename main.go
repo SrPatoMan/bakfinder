@@ -41,7 +41,6 @@ func main() {
 		for scanner.Scan() {
 			subdomain := scanner.Text()
 			permutations := bakfinderfunctions.Permutations(subdomain)
-			fmt.Println(permutations)
 
 			ch <- struct{}{}
 			wg.Add(1)

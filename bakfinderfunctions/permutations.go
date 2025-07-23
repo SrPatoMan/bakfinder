@@ -27,7 +27,7 @@ func Permutations(subdomain string) []string {
 	}
 
 	subdomains := hostname_parts[:len(hostname_parts)-2]
-	domain := hostname_parts[len(hostname_parts)-2:]
+	//domain := hostname_parts[len(hostname_parts)-2:]
 	domain_without_tld := hostname_parts[len(hostname_parts)-2 : len(hostname_parts)-1]
 	all_without_tld := hostname_parts[:len(hostname_parts)-1]
 

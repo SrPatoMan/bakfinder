@@ -30,10 +30,21 @@ func Permutations(subdomain string) []string {
 	domain_without_tld := hostname_parts[len(hostname_parts)-2 : len(hostname_parts)-1]
 	all_without_tld := hostname_parts[:len(hostname_parts)-1]
 
+	separators := []string{".", "_", "-"}
+
 	for _, sub := range subdomains {
 		for _, ext := range extensions {
 			permutation := fmt.Sprintf("%s.%s", sub, ext)
 			permutations = append(permutations, permutation)
+		}
+	}
+
+	for _, separator := range separators {
+		for _, sub := range subdomains {
+			for _, ext := range extensions {
+				permutation := fmt.Sprintf("%s%sbackup.%s", sub, separator, ext)
+				permutations = append(permutations, permutation)
+			}
 		}
 	}
 
@@ -44,12 +55,18 @@ func Permutations(subdomain string) []string {
 		}
 	}
 
-	separators := []string{".", "_", "-"}
-
 	for _, separator := range separators {
 		subdomainsStr := strings.Join(subdomains, separator)
 		for _, ext := range extensions {
 			permutation := fmt.Sprintf("%s.%s", subdomainsStr, ext)
+			permutations = append(permutations, permutation)
+		}
+	}
+
+	for _, separator := range separators {
+		subdomainsStr := strings.Join(subdomains, separator)
+		for _, ext := range extensions {
+			permutation := fmt.Sprintf("%s%sbackup.%s", subdomainsStr, separator, ext)
 			permutations = append(permutations, permutation)
 		}
 	}

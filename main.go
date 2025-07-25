@@ -6,8 +6,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/signal"
 	"strings"
 	"sync"
+	"syscall"
 )
 
 func main() {
@@ -16,6 +18,15 @@ func main() {
 	targetFile := flag.String("l", "", "Target list")
 	concurrent := flag.Int("t", 20, "Amount of threads")
 	flag.Parse()
+
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		<-sigCh
+		fmt.Println("\n[-] Exiting...")
+		os.Exit(0)
+	}()
 
 	if *target == "" && *targetFile == "" {
 		fmt.Println("[!] Provide a subdomain input file (-l) or a single target (-u)")

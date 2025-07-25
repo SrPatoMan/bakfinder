@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -39,13 +40,36 @@ func main() {
 		var wg sync.WaitGroup
 
 		for scanner.Scan() {
-			subdomain := scanner.Text()
+			subdomain := strings.TrimSpace(scanner.Text())
+			subdomain = strings.TrimSuffix(subdomain, "/")
 			permutations := bakfinderfunctions.Permutations(subdomain)
 
 			ch <- struct{}{}
 			wg.Add(1)
 			go bakfinderfunctions.Fuzzing(subdomain, permutations, ch, &wg)
 		}
+
+		wg.Wait()
+
+	}
+
+	if *targetFile == "" && *target != "" {
+
+		ch := make(chan struct{}, *concurrent)
+		var wg sync.WaitGroup
+
+		subdomain := strings.TrimSpace(*target)
+		subdomain = strings.TrimSuffix(subdomain, "/")
+
+		if !strings.HasPrefix(subdomain, "http://") && !strings.HasPrefix(subdomain, "https://") {
+			fmt.Printf("[!] The URL %s is wrong, enter a correct URL. Ex: https://sub1.sub2.target.com\n", subdomain)
+			os.Exit(1)
+		}
+
+		permutations := bakfinderfunctions.Permutations(subdomain)
+		ch <- struct{}{}
+		wg.Add(1)
+		go bakfinderfunctions.Fuzzing(subdomain, permutations, ch, &wg)
 
 		wg.Wait()
 

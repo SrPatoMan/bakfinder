@@ -1,10 +1,10 @@
 <h1 align="center">Bakfinder</h1>
 
 Bakfinder is a tool that helps you search for exposed backups and configuration files. The tool generates a wordlist based on permutations of your target's hostname or a list of targets.    
-
+<br>
    
 <p align="center">
-  <img width="600" height="300" src="https://github.com/user-attachments/assets/6d9e8839-5169-4208-a642-e6b262600714" alt="image" />
+  <img width="800" height="400" src="https://github.com/user-attachments/assets/6d9e8839-5169-4208-a642-e6b262600714" alt="image" />
 </p>   
 
 

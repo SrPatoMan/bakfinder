@@ -15,8 +15,8 @@ import (
 func main() {
 
 	target := flag.String("u", "", "URL of your target. Ej: -u https://subdomain.domain.com")
-	targetFile := flag.String("l", "", "Target list")
-	concurrent := flag.Int("t", 20, "Amount of threads")
+	targetFile := flag.String("l", "", "Subdomain list")
+	concurrent := flag.Int("t", 20, "Amount of threads.")
 	flag.Parse()
 
 	sigCh := make(chan os.Signal, 1)

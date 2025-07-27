@@ -1,2 +1,4 @@
-# bakfinder
+<h1 align="center">Bakfinder</h1>
 A go tool for finding backups based on the subdomains name
+
+Bakfinder is a tool that helps you search for exposed backups and configuration files. The tool generates a wordlist based on permutations of your target's hostname or a list of targets.

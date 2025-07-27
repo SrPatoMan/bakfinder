@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
-	"strings"
 	"sync"
 )
 
@@ -30,33 +28,6 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 		myurl := fmt.Sprintf("%s/%s", subdomain, payload)
 		resp, err := http.Get(myurl)
 		if err != nil {
-			return
-		}
-
-		var offsiteRedirectDetected bool
-
-		func() {
-			location := resp.Header.Get("Location")
-			locationParsing, parsingErr := url.Parse(location)
-			if parsingErr != nil {
-				return
-			}
-			locationHostname := locationParsing.Hostname()
-
-			hostname := strings.Split(subdomain, ".")
-			hostname = hostname[len(hostname)-2:]
-			hostnameSubdomain := strings.Join(hostname, ".")
-
-			if location != "" && !strings.HasSuffix(locationHostname, hostnameSubdomain) {
-				offsiteRedirectDetected = true
-			}
-		}()
-
-		if offsiteRedirectDetected {
-			return
-		}
-
-		if resp.StatusCode != 200 {
 			return
 		}
 

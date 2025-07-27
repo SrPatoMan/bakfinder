@@ -56,10 +56,16 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 			return
 		}
 
+		if resp.StatusCode != 200 {
+			return
+		}
+
 		body, bodyErr := io.ReadAll(resp.Body)
 		if bodyErr != nil {
 			return
 		}
+		defer resp.Body.Close()
+
 		length := len(body)
 
 		if resp.StatusCode == 200 && length != controlLength {

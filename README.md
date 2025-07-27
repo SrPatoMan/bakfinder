@@ -15,7 +15,7 @@ You can install the tool with `go install` or download the repo and doing `go bu
 Installing with go install:   
 
 ```
-go install github.com/SrPatoMan/bakfinder/cmd/bakfinder@latest
+go install github.com/SrPatoMan/bakfinder@latest
 ```   
 
 ## Usage   

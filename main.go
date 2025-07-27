@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bakfinder/bakfinderfunctions"
 	"bufio"
 	"flag"
 	"fmt"
@@ -10,6 +9,8 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+
+	"github.com/SrPatoMan/bakfinder/bakfinderfunctions"
 )
 
 func main() {

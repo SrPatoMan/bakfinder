@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"strings"
 	"sync"
 )
 
@@ -25,14 +27,43 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 
 	for _, payload := range payloads {
 
-		url := fmt.Sprintf("%s/%s", subdomain, payload)
-		resp, _ := http.Get(url)
+		myurl := fmt.Sprintf("%s/%s", subdomain, payload)
+		resp, err := http.Get(myurl)
+		if err != nil {
+			return
+		}
 
-		body, _ := io.ReadAll(resp.Body)
+		var earlyReturn bool
+
+		func() {
+			location := resp.Header.Get("Location")
+			locationParsing, parsingErr := url.Parse(location)
+			if parsingErr != nil {
+				return
+			}
+			locationHostname := locationParsing.Hostname()
+
+			hostname := strings.Split(subdomain, ".")
+			hostname = hostname[len(hostname)-2:]
+			hostnameSubdomain := strings.Join(hostname, ".")
+
+			if location != "" && !strings.HasSuffix(locationHostname, hostnameSubdomain) {
+				earlyReturn = true
+			}
+		}()
+
+		if earlyReturn {
+			return
+		}
+
+		body, bodyErr := io.ReadAll(resp.Body)
+		if bodyErr != nil {
+			return
+		}
 		length := len(body)
 
 		if resp.StatusCode == 200 && length != controlLength {
-			fmt.Printf("\033[32m[+]\033[0m %s found\n", url)
+			fmt.Printf("\033[32m[+]\033[0m %s found\n", myurl)
 		}
 
 	}

@@ -2,6 +2,9 @@
 
 Bakfinder is a tool that helps you search for exposed backups and configuration files. The tool generates a wordlist based on permutations of your target's hostname or a list of targets.    
 
+<img width="1109" height="439" alt="image" src="https://github.com/user-attachments/assets/6d9e8839-5169-4208-a642-e6b262600714" />   
+
+
 ## Installation   
 
 You can install the tool with `go install` or download the repo and doing `go build main.go`   

@@ -8,11 +8,19 @@ import (
 )
 
 func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.WaitGroup) {
+	defer func() { <-ch }()
+	defer wg.Done()
 
 	controlUrl := fmt.Sprintf("%s/", subdomain)
-	controlRequest, _ := http.Get(controlUrl)
+	controlRequest, controlErr := http.Get(controlUrl)
+	if controlErr != nil {
+		return
+	}
 
-	controlBody, _ := io.ReadAll(controlRequest.Body)
+	controlBody, controlErrBody := io.ReadAll(controlRequest.Body)
+	if controlErrBody != nil {
+		controlBody = []byte{}
+	}
 	controlLength := len(controlBody)
 
 	for _, payload := range payloads {
@@ -28,8 +36,5 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 		}
 
 	}
-
-	defer func() { <-ch }()
-	defer wg.Done()
 
 }

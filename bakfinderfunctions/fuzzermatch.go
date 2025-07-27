@@ -33,7 +33,7 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 			return
 		}
 
-		var earlyReturn bool
+		var offsiteRedirectDetected bool
 
 		func() {
 			location := resp.Header.Get("Location")
@@ -48,11 +48,11 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 			hostnameSubdomain := strings.Join(hostname, ".")
 
 			if location != "" && !strings.HasSuffix(locationHostname, hostnameSubdomain) {
-				earlyReturn = true
+				offsiteRedirectDetected = true
 			}
 		}()
 
-		if earlyReturn {
+		if offsiteRedirectDetected {
 			return
 		}
 
@@ -67,6 +67,8 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 		defer resp.Body.Close()
 
 		length := len(body)
+
+		fmt.Printf("[DEBUG] url: %s | status: %d | length: %d | control: %d\n", myurl, resp.StatusCode, length, controlLength)
 
 		if resp.StatusCode == 200 && length != controlLength {
 			fmt.Printf("\033[32m[+]\033[0m %s found\n", myurl)

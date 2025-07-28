@@ -46,7 +46,7 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 
 		length := len(body)
 
-		fmt.Printf("[DEBUG] url: %s | status: %d | length: %d | control: %d\n", myurl, resp.StatusCode, length, controlLength)
+		//fmt.Printf("[DEBUG] url: %s | status: %d | length: %d | control: %d\n", myurl, resp.StatusCode, length, controlLength)
 
 		if resp.StatusCode == 200 && length != controlLength {
 			fmt.Printf("\033[32m[+]\033[0m %s found\n", myurl)

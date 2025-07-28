@@ -11,8 +11,14 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 	defer func() { <-ch }()
 	defer wg.Done()
 
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+
 	controlUrl := fmt.Sprintf("%s/", subdomain)
-	controlRequest, controlErr := http.Get(controlUrl)
+	controlRequest, controlErr := client.Get(controlUrl)
 	if controlErr != nil {
 		return
 	}
@@ -26,7 +32,8 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 	for _, payload := range payloads {
 
 		myurl := fmt.Sprintf("%s/%s", subdomain, payload)
-		resp, err := http.Get(myurl)
+
+		resp, err := client.Get(myurl)
 		if err != nil {
 			return
 		}

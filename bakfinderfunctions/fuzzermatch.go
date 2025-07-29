@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"sync"
 )
 
@@ -15,6 +16,10 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
+	}
+
+	falsePositivePatterns := []string{
+		"window.location",
 	}
 
 	controlUrl := fmt.Sprintf("%s/", subdomain)
@@ -43,6 +48,14 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 			return
 		}
 		defer resp.Body.Close()
+
+		bodyStr := string(body)
+
+		for _, falsePositivePattern := range falsePositivePatterns {
+			if strings.Contains(bodyStr, falsePositivePattern) {
+				return
+			}
+		}
 
 		length := len(body)
 

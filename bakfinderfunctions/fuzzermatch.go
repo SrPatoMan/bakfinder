@@ -27,6 +27,9 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 		"location.assign",
 		"location.replace",
 		"document.forms[0].submit()",
+		"blazor.webassembly.js",
+		"_framework/blazor",
+		"blazor-environment",
 	}
 
 	controlUrl := fmt.Sprintf("%s/", subdomain)

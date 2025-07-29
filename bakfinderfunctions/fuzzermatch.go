@@ -20,6 +20,13 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 
 	falsePositivePatterns := []string{
 		"window.location",
+		"location =",
+		"location=",
+		"location.href",
+		"window.location.href",
+		"location.assign",
+		"location.replace",
+		"document.forms[0].submit()",
 	}
 
 	controlUrl := fmt.Sprintf("%s/", subdomain)
@@ -49,7 +56,7 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 		}
 		defer resp.Body.Close()
 
-		bodyStr := string(body)
+		bodyStr := strings.ToLower(string(body))
 
 		for _, falsePositivePattern := range falsePositivePatterns {
 			if strings.Contains(bodyStr, falsePositivePattern) {

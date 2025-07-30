@@ -50,20 +50,20 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 
 		resp, err := client.Get(myurl)
 		if err != nil {
-			return
+			continue
 		}
 
 		body, bodyErr := io.ReadAll(resp.Body)
 		if bodyErr != nil {
-			return
+			continue
 		}
-		defer resp.Body.Close()
+		resp.Body.Close()
 
 		bodyStr := strings.ToLower(string(body))
 
 		for _, falsePositivePattern := range falsePositivePatterns {
 			if strings.Contains(bodyStr, falsePositivePattern) {
-				return
+				continue
 			}
 		}
 

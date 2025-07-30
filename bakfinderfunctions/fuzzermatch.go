@@ -74,6 +74,12 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 			continue
 		}
 
+		echoServerDetected := strings.ToLower(fmt.Sprintf("GET /%s", payload))
+
+		if strings.Contains(bodyStr, echoServerDetected) {
+			continue
+		}
+
 		length := len(body)
 
 		if resp.StatusCode == 200 && length != controlLength {

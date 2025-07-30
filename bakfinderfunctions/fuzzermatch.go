@@ -61,10 +61,17 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 
 		bodyStr := strings.ToLower(string(body))
 
+		skip := false
+
 		for _, falsePositivePattern := range falsePositivePatterns {
 			if strings.Contains(bodyStr, falsePositivePattern) {
-				continue
+				skip = true
+				break
 			}
+		}
+
+		if skip {
+			continue
 		}
 
 		length := len(body)

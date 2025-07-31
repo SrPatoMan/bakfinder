@@ -6,16 +6,27 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"time"
 )
 
 func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.WaitGroup) {
 	defer func() { <-ch }()
 	defer wg.Done()
 
+	transport := &http.Transport{
+		MaxConnsPerHost:       20,
+		MaxIdleConns:          500,
+		DisableCompression:    true,
+		IdleConnTimeout:       30 * time.Second,
+		TLSHandshakeTimeout:   8 * time.Second,
+		ResponseHeaderTimeout: 8 * time.Second,
+	}
+
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
+		Transport: transport,
 	}
 
 	falsePositivePatterns := []string{

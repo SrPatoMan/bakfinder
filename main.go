@@ -39,6 +39,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	client := bakfinderfunctions.HttpClient()
+
 	if *target == "" && *targetFile != "" {
 		subdomainsFile, err := os.Open(*targetFile)
 		if err != nil {
@@ -58,7 +60,7 @@ func main() {
 
 			ch <- struct{}{}
 			wg.Add(1)
-			go bakfinderfunctions.Fuzzing(subdomain, permutations, ch, &wg)
+			go bakfinderfunctions.Fuzzing(subdomain, permutations, ch, &wg, client)
 		}
 
 		wg.Wait()
@@ -81,7 +83,7 @@ func main() {
 		permutations := bakfinderfunctions.Permutations(subdomain)
 		ch <- struct{}{}
 		wg.Add(1)
-		go bakfinderfunctions.Fuzzing(subdomain, permutations, ch, &wg)
+		go bakfinderfunctions.Fuzzing(subdomain, permutations, ch, &wg, client)
 
 		wg.Wait()
 

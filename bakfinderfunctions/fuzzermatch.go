@@ -39,6 +39,8 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 	}
 	controlLength := len(controlBody)
 
+	controlContentLength := controlRequest.Header.Get("Content-Length")
+
 	for _, payload := range payloads {
 
 		myurl := fmt.Sprintf("%s/%s", subdomain, payload)
@@ -77,7 +79,9 @@ func Fuzzing(subdomain string, payloads []string, ch chan struct{}, wg *sync.Wai
 
 		length := len(body)
 
-		if resp.StatusCode == 200 && length != controlLength {
+		contentLength := resp.Header.Get("Content-Length")
+
+		if resp.StatusCode == 200 && length != controlLength && controlContentLength != contentLength {
 			fmt.Printf("\033[32m[+]\033[0m %s \033[32mfound\033[0m\n", myurl)
 		}
 
